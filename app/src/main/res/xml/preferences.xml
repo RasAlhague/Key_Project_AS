@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android = "http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory
+        android:title = "@string/general"
+        android:key = "pref_key_general">
+
+        <PreferenceScreen
+            android:key = "pref_key_grand_access_to_door"
+            android:title = "@string/grand_access_to_door">
+
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:key = "pref_key_update_door_list"
+            android:title = "@string/update_door_list">
+
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title = "@string/fb_pref_title"
+        android:key = "pref_key_fb_pref_title">
+
+        <Preference
+            android:key = "pref_key_fb_logout"
+            android:title = "@string/logout_from_fb_title">
+        </Preference>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
