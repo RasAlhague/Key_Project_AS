@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.rasalhague.key.ActionBarBehavior;
 import com.rasalhague.key.R;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
@@ -22,15 +23,8 @@ public class LoginFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_login, null);
 
         //Hide ActionBar when in login fragment
-        try
-        {
-            getActivity().getActionBar()
-                         .hide();
-        }
-        catch (NullPointerException e)
-        {
-            Log.w(TAG, e.getMessage());
-        }
+        ActionBarBehavior.getInstance()
+                         .hideActionBar(getActivity());
 
         Button loginButton = (Button) view.findViewById(R.id.login_button);
         loginButton.setOnClickListener(new View.OnClickListener()

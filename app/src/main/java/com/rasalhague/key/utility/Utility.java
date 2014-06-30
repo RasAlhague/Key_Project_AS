@@ -16,9 +16,12 @@ public class Utility
     /**
      * Replace fragment.
      *
-     * @param fragmentManager the fragment manager
-     * @param fragment the fragment
-     * @param addToBackStack the add to back stack
+     * @param fragmentManager
+     *         the fragment manager
+     * @param fragment
+     *         the fragment
+     * @param addToBackStack
+     *         the add to back stack
      */
     public static void replaceFragment(FragmentManager fragmentManager, Fragment fragment, boolean addToBackStack)
     {

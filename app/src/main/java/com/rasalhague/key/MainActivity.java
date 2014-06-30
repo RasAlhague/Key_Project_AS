@@ -8,6 +8,7 @@ import android.view.Menu;
 import com.facebook.Session;
 import com.rasalhague.key.fragments.LoginFragment;
 import com.rasalhague.key.fragments.MainFragment;
+import com.rasalhague.key.utility.Utility;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.SimpleFacebookConfiguration;
@@ -40,10 +41,7 @@ public class MainActivity extends Activity
 
             if (savedInstanceState == null)
             {
-                getFragmentManager().beginTransaction()
-                                    .replace(R.id.container, new MainFragment())
-//                                    .addToBackStack(null)
-                                    .commit();
+                Utility.replaceFragment(getFragmentManager(), new MainFragment(), false);
             }
         }
         else
@@ -52,10 +50,7 @@ public class MainActivity extends Activity
 
             if (savedInstanceState == null)
             {
-                getFragmentManager().beginTransaction()
-                                    .replace(R.id.container, new LoginFragment())
-//                                    .addToBackStack(null)
-                                    .commit();
+                Utility.replaceFragment(getFragmentManager(), new LoginFragment(), false);
             }
         }
     }

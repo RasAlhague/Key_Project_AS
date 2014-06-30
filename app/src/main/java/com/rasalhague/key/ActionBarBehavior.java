@@ -2,13 +2,15 @@ package com.rasalhague.key;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import com.rasalhague.key.fragments.SettingsFragment;
 import com.rasalhague.key.utility.Utility;
 
 public class ActionBarBehavior
 {
-    private static ActionBarBehavior ourInstance = new ActionBarBehavior();
+    private static final String            TAG         = "ActionBarBehavior";
+    private static       ActionBarBehavior ourInstance = new ActionBarBehavior();
 
     public static ActionBarBehavior getInstance()
     {
@@ -22,6 +24,32 @@ public class ActionBarBehavior
     public void initActionBar(Activity activity)
     {
         setUpActionBar(activity);
+    }
+
+    public void showActionBar(Activity activity)
+    {
+        try
+        {
+            activity.getActionBar()
+                    .show();
+        }
+        catch (NullPointerException e)
+        {
+            Log.w(TAG, e.getMessage());
+        }
+    }
+
+    public void hideActionBar(Activity activity)
+    {
+        try
+        {
+            activity.getActionBar()
+                    .hide();
+        }
+        catch (NullPointerException e)
+        {
+            Log.w(TAG, e.getMessage());
+        }
     }
 
     private void setUpActionBar(final Activity activity)

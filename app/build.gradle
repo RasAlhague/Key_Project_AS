@@ -26,4 +26,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':facebook')
     compile project(':Simple Facebook')
+    compile 'com.android.support:support-v13:20+'
+}
+
+configurations {
+    all*.exclude group: 'com.android.support', module: 'support-v4'
 }
