@@ -1,16 +1,16 @@
 package com.rasalhague.key.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.rasalhague.key.ActionBarBehavior;
+import com.rasalhague.key.DoorsViewPagerBehavior;
 import com.rasalhague.key.R;
 import com.sromku.simple.fb.SimpleFacebook;
 import com.sromku.simple.fb.entities.Profile;
@@ -21,34 +21,29 @@ public class MainFragment extends Fragment
     private static final String TAG = "MainFragment";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        super.onCreate(savedInstanceState);
+        Log.w(TAG, "onCreate");
 
         //Show ActionBar when in main fragment
         ActionBarBehavior.getInstance()
                          .showActionBar(getActivity());
+    }
 
-        testFBConnection(rootView);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        Log.w(TAG, "onCreateView");
 
-        ViewPager doorsViewPager = (ViewPager) rootView.findViewById(R.id.doorsViewPager);
-        PagerAdapter pagerAdapter = new FragmentPagerAdapter(getActivity().getFragmentManager())
-        {
-            @Override
-            public Fragment getItem(int position)
-            {
-                return DoorsPagerItemFragment.newInstance(position);
-            }
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            @Override
-            public int getCount()
-            {
-                return 10;
-            }
-        };
+        //TESTING
+        //        testFBConnection(rootView);
+        testSharedPreferenceUserInfo(rootView);
 
-        doorsViewPager.setAdapter(pagerAdapter);
-        doorsViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener());
+        DoorsViewPagerBehavior.getInstance()
+                              .initDoorsViewPager(rootView, getFragmentManager());
 
         return rootView;
     }
@@ -56,9 +51,22 @@ public class MainFragment extends Fragment
     /**
      * Only for testing
      */
+    private void testSharedPreferenceUserInfo(View rootView)
+    {
+        final TextView textView = (TextView) rootView.findViewById(R.id.textViewTest);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(getString(R.string.shared_preference_key),
+                                                                                 Context.MODE_PRIVATE);
+
+        textView.setText("");
+        textView.append(sharedPreferences.getString("user_name", "user_name"));
+        textView.append("\n" + sharedPreferences.getString("user_email", "user_email"));
+    }
+
+    /**
+     * Only for testing
+     */
     private void testFBConnection(View rootView)
     {
-
         SimpleFacebook simpleFacebook = SimpleFacebook.getInstance();
         final TextView textView = (TextView) rootView.findViewById(R.id.textViewTest);
         textView.setText("");
@@ -86,7 +94,6 @@ public class MainFragment extends Fragment
                 super.onFail(reason);
 
                 textView.append(reason);
-
             }
         });
     }

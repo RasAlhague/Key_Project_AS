@@ -12,9 +12,9 @@
         android:layout_height = "wrap_content"
         android:layout_alignParentTop = "true"
         android:layout_centerHorizontal = "true"
-        android:layout_marginTop = "100sp"
+        android:layout_marginTop = "100dp"
         android:text = "@string/key_string"
-        android:textSize = "30pt"/>
+        android:textSize = "50sp"/>
 
     <Button
         android:layout_width = "wrap_content"

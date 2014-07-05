@@ -1,21 +1,40 @@
 package com.rasalhague.key.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import com.google.gson.Gson;
 import com.rasalhague.key.ActionBarBehavior;
+import com.rasalhague.key.Door;
+import com.rasalhague.key.MainActivity;
 import com.rasalhague.key.R;
+import com.rasalhague.key.utility.Utility;
 import com.sromku.simple.fb.Permission;
 import com.sromku.simple.fb.SimpleFacebook;
+import com.sromku.simple.fb.entities.Profile;
 import com.sromku.simple.fb.listeners.OnLoginListener;
+import com.sromku.simple.fb.listeners.OnProfileListener;
 
-public class LoginFragment extends Fragment
+import java.util.ArrayList;
+
+public class LoginFragment extends Fragment implements OnLoginListener
 {
     private static final String TAG = "LoginFragment";
+    SimpleFacebook simpleFacebook;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        simpleFacebook = SimpleFacebook.getInstance();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -32,50 +51,100 @@ public class LoginFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                SimpleFacebook.getInstance()
-                              .login(onLoginListener);
+
+                //TODO SHOW AWAITING ANIMATION
+
+                simpleFacebook.login(LoginFragment.this);
             }
         });
 
         return view;
     }
 
-    OnLoginListener onLoginListener = new OnLoginListener()
+    @Override
+    public void onLogin()
     {
-        @Override
-        public void onLogin()
+        getUserInfoFromFB();
+    }
+
+    private void getUserInfoFromFB()
+    {
+        final Profile.Properties properties = new Profile.Properties.Builder().add(Profile.Properties.NAME)
+                                                                              .add(Profile.Properties.EMAIL)
+                                                                              .build();
+
+        simpleFacebook.getProfile(properties, new OnProfileListener()
         {
-            // change the state of the button or do whatever you want
-            Log.i(TAG, "Logged in");
+            @Override
+            public void onComplete(Profile response)
+            {
+                super.onComplete(response);
 
-            getFragmentManager().beginTransaction()
-                                .replace(R.id.container, new MainFragment())
-                                .commit();
-        }
+                saveUserInfo(response);
+                getUserInfoFromTriolan();
 
-        @Override
-        public void onNotAcceptingPermissions(Permission.Type type)
-        {
-            // user didn't accept READ or WRITE permission
-            Log.w(TAG, String.format("You didn't accept %s permissions", type.name()));
-        }
+                Utility.replaceFragment(getFragmentManager(), new MainFragment(), false);
+            }
 
-        @Override
-        public void onThinking()
-        {
+            @Override
+            public void onFail(String reason)
+            {
+                super.onFail(reason);
 
-        }
+                Log.w(TAG, reason);
+            }
+        });
+    }
 
-        @Override
-        public void onException(Throwable throwable)
-        {
+    private void saveUserInfo(Profile profile)
+    {
+        getActivity().getSharedPreferences(getString(R.string.shared_preference_key), Context.MODE_PRIVATE)
+                     .edit()
+                     .putString(getString(R.string.shared_pref_key_user_email), profile.getEmail())
+                     .putString(getString(R.string.shared_pref_key_user_name), profile.getName())
+                     .commit();
+    }
 
-        }
+    private void getUserInfoFromTriolan()
+    {
+        //TODO HTTP REQUEST REALIZATION
 
-        @Override
-        public void onFail(String reason)
-        {
+        Gson gson = new Gson();
+        Context context = MainActivity.getCONTEXT();
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.shared_preference_key),
+                                                                           Context.MODE_PRIVATE);
 
-        }
-    };
+        ArrayList<Door> doorAL = new ArrayList<Door>();
+        doorAL.add(new Door("Door 1"));
+        doorAL.add(new Door("Door 2"));
+        doorAL.add(new Door("Door 3"));
+
+        sharedPreferences.edit()
+                         .putString(context.getString(R.string.shared_pref_key_doors), gson.toJson(doorAL))
+                         .commit();
+    }
+
+    @Override
+    public void onNotAcceptingPermissions(Permission.Type type)
+    {
+        Log.w(TAG, String.format("You didn't accept %s permissions", type.name()));
+    }
+
+    @Override
+    public void onThinking()
+    {
+
+    }
+
+    @Override
+    public void onException(Throwable throwable)
+    {
+
+    }
+
+    @Override
+    public void onFail(String reason)
+    {
+
+    }
 }

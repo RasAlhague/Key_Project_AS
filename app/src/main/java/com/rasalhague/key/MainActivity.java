@@ -1,11 +1,11 @@
 package com.rasalhague.key;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import com.facebook.Session;
 import com.rasalhague.key.fragments.LoginFragment;
 import com.rasalhague.key.fragments.MainFragment;
 import com.rasalhague.key.utility.Utility;
@@ -16,8 +16,19 @@ import com.sromku.simple.fb.SimpleFacebookConfiguration;
 public class MainActivity extends Activity
 {
     private static final String TAG = "MainActivity";
+    private static Context CONTEXT;
 
     SimpleFacebook mSimpleFacebook;
+
+    public static Context getCONTEXT()
+    {
+        return CONTEXT;
+    }
+
+    public static void setCONTEXT(Context CONTEXT)
+    {
+        MainActivity.CONTEXT = CONTEXT;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -25,10 +36,9 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.w(TAG, "onCreate");
+        setCONTEXT(this);
 
-        //SetUp Default properties
-//        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        Log.d(TAG, "onCreate");
 
         Permission[] permissions = new Permission[]{Permission.USER_PHOTOS,
                                                     Permission.EMAIL,
@@ -37,7 +47,7 @@ public class MainActivity extends Activity
 
         if (mSimpleFacebook.isLogin())
         {
-            Log.w(TAG, "Session isOpened");
+            Log.d(TAG, "Session isOpened");
 
             if (savedInstanceState == null)
             {
@@ -46,7 +56,7 @@ public class MainActivity extends Activity
         }
         else
         {
-            Log.w(TAG, String.format("You didn't accept %s permissions", "Session is Closed"));
+            Log.d(TAG, "Session is Closed");
 
             if (savedInstanceState == null)
             {
@@ -86,43 +96,5 @@ public class MainActivity extends Activity
         mSimpleFacebook.onActivityResult(this, requestCode, resultCode, data);
 
         super.onActivityResult(requestCode, resultCode, data);
-
-        Session.getActiveSession()
-               .onActivityResult(this, requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
-        Log.w(TAG, "onStart");
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        Log.w(TAG, "onResume");
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        Log.w(TAG, "onPause");
-    }
-
-    @Override
-    protected void onStop()
-    {
-        super.onStop();
-        Log.w(TAG, "onStop");
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        super.onDestroy();
-        Log.w(TAG, "onDestroy");
     }
 }
